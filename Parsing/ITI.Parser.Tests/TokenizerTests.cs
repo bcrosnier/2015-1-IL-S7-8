@@ -38,11 +38,15 @@ namespace ITI.Parser.Tests
             Node n = a.Analyse(tokenizer);
             Console.WriteLine(n.ToString());
 
+            Assert.That(n.ToString(), Is.EqualTo("(((3 + ((5 * 125) / 7)) - 6) + 10)"));
+
             a = new Analyser();
             tokenizer = new StringTokenizer("1-1+1");
 
             n = a.Analyse(tokenizer);
             Console.WriteLine(n.ToString());
+
+            Assert.That(n.ToString(), Is.EqualTo("((1 - 1) + 1)"));
             //Debugger.Break();
         }
     }

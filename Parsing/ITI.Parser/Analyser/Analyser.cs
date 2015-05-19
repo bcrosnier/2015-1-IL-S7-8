@@ -10,7 +10,7 @@ namespace ITI.Parser
     public class Analyser
     {
 
-        public Node Analyse( ITokenizer tokenizer )
+        public Node Analyse(ITokenizer tokenizer)
         {
             //return ReadExpr(tokenizer);
 
@@ -22,76 +22,60 @@ namespace ITI.Parser
         {
             Node term = HandleTerm(tokenizer);
 
-            TokenType opToken = tokenizer.CurrentToken;
+            TokenType opToken;
 
-            Node expr = term;
-
-            if((opToken & TokenType.IsAddOperator) == TokenType.IsAddOperator)
+            while (((opToken = tokenizer.CurrentToken) & TokenType.IsAddOperator) == TokenType.IsAddOperator)
             {
-                while((opToken & TokenType.IsAddOperator) == TokenType.IsAddOperator)
-                {
-                    tokenizer.GetNextToken();
-                    Node right = HandleTerm(tokenizer);
-                    expr = new BinaryNode(opToken, expr, right);
-                    opToken = tokenizer.CurrentToken;
-                }
-                return expr;
+                tokenizer.GetNextToken();
+                Node right = HandleTerm(tokenizer);
+                term = new BinaryNode(opToken, term, right);
             }
-            else 
-            {
-                return term;
-            }
+            return term;
         }
 
-        Node HandleTerm(ITokenizer tokenizer) {
+        Node HandleTerm(ITokenizer tokenizer)
+        {
             Node factor = HandleFactor(tokenizer);
 
-            TokenType opToken = tokenizer.CurrentToken;
+            TokenType opToken;
 
-            Node expr = factor;
-
-            if ((opToken & TokenType.IsMultOperator) == TokenType.IsMultOperator)
+            while (((opToken = tokenizer.CurrentToken) & TokenType.IsMultOperator) == TokenType.IsMultOperator)
             {
-                while ((opToken & TokenType.IsMultOperator) == TokenType.IsMultOperator)
-                {
-                    tokenizer.GetNextToken();
-                    Node right = HandleFactor(tokenizer);
-                    expr = new BinaryNode(opToken, expr, right);
-
-                    opToken = tokenizer.CurrentToken;
-                }
-
-                return expr;
+                tokenizer.GetNextToken();
+                Node right = HandleFactor(tokenizer);
+                factor = new BinaryNode(opToken, factor, right);
             }
-            else
-            {
-                return factor;
-            }
+
+            return factor;
 
         }
 
-        Node HandleFactor(ITokenizer tokenizer) {
+        Node HandleFactor(ITokenizer tokenizer)
+        {
             TokenType t = tokenizer.CurrentToken;
 
             bool minus = false;
             if (t == TokenType.Minus) { minus = true; tokenizer.GetNextToken(); }
 
             double v;
-            if(tokenizer.MatchDouble(out v))
+            if (tokenizer.MatchDouble(out v))
             {
-                return new ConstantNode(minus?-v:v);
-            } else if(tokenizer.CurrentToken == TokenType.OpenPar)
+                return new ConstantNode(minus ? -v : v);
+            }
+            else if (tokenizer.CurrentToken == TokenType.OpenPar)
             {
                 tokenizer.GetNextToken();
                 Node d = HandleExpression(tokenizer);
-                if(tokenizer.CurrentToken != TokenType.ClosePar)
+                if (tokenizer.CurrentToken != TokenType.ClosePar)
                 {
                     return new ErrorNode(String.Format("Mismatched close paren in factor: Expected CloseParen but for {0}", tokenizer.CurrentToken));
-                } else
+                }
+                else
                 {
                     return d;
                 }
-            } else
+            }
+            else
             {
                 return new ErrorNode(String.Format("Invalid token in factor: Expected Number or OpenParen but got {0}", tokenizer.CurrentToken));
             }
@@ -102,7 +86,7 @@ namespace ITI.Parser
             Node left;
             TokenType operatorToken;
             Node right;
-            
+
             // Left
             TokenType token = tokenizer.GetNextToken();
             double constValue;
@@ -110,7 +94,7 @@ namespace ITI.Parser
             {
                 left = ReadExpr(tokenizer);
             }
-            else if(tokenizer.MatchDouble(out constValue))
+            else if (tokenizer.MatchDouble(out constValue))
             {
                 left = new ConstantNode(constValue);
             }
