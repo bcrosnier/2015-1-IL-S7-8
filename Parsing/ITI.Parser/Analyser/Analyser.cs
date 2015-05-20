@@ -20,7 +20,7 @@ namespace ITI.Parser
 
         private Node HandleSuperExpression()
         {
-            var left = HandleExpression();
+            var left = HandleBooleanExpression();
             if (_tokenizer.CurrentToken == TokenType.QuestionMark)
             {
                 _tokenizer.GetNextToken();
@@ -34,6 +34,23 @@ namespace ITI.Parser
 
                 return new IfNode(left, whenTrue, whenFalse);
             } else {
+                return left;
+            }
+        }
+
+        private Node HandleBooleanExpression()
+        {
+            var left = HandleExpression();
+            if ((_tokenizer.CurrentToken & TokenType.IsBooleanOperator) == TokenType.IsBooleanOperator)
+            {
+                var currentToken = _tokenizer.CurrentToken;
+
+                _tokenizer.GetNextToken();
+
+                return new BinaryNode(currentToken, left, HandleExpression());
+            }
+            else
+            {
                 return left;
             }
         }

@@ -24,6 +24,12 @@ namespace ITI.Parser
                 case TokenType.Div: _currentValue = left / right; break;
                 case TokenType.Plus: _currentValue = left + right; break;
                 case TokenType.Minus: _currentValue = left - right; break;
+                case TokenType.GreaterOrEqual: _currentValue = Convert.ToDouble(left >= right); break;
+                case TokenType.GreaterThan: _currentValue = Convert.ToDouble(left > right); break;
+                case TokenType.LessOrEqual: _currentValue = Convert.ToDouble(left <= right); break;
+                case TokenType.LessThan: _currentValue = Convert.ToDouble(left < right); break;
+                case TokenType.EqualTo: _currentValue = Convert.ToDouble(left == right); break;
+                case TokenType.NotEqual: _currentValue = Convert.ToDouble(left != right); break;
             }
         }
 

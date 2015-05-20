@@ -30,7 +30,7 @@ namespace ITI.Parser
         GreaterOrEqual,
         LessThan,
         LessOrEqual,
-        Different,
+        NotEqual,
         EqualTo
     }
 }

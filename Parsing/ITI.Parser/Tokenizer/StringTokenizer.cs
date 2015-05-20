@@ -173,7 +173,7 @@ namespace ITI.Parser
                     {
                         if (Peek() == '=')
                         {
-                            _curToken = TokenType.Different;
+                            _curToken = TokenType.NotEqual;
                             Forward();
                         }
                         else
