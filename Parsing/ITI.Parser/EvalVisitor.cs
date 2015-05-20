@@ -12,13 +12,13 @@ namespace ITI.Parser
 
         public double Result { get { return _currentValue; } }
 
-        public override void Visit( BinaryNode n )
+        public override void Visit(BinaryNode n)
         {
-            VisitNode( n.Left );
+            VisitNode(n.Left);
             var left = _currentValue;
-            VisitNode( n.Right );
+            VisitNode(n.Right);
             var right = _currentValue;
-            switch( n.OperatorType )
+            switch (n.OperatorType)
             {
                 case TokenType.Mult: _currentValue = left * right; break;
                 case TokenType.Div: _currentValue = left / right; break;
@@ -27,15 +27,33 @@ namespace ITI.Parser
             }
         }
 
-        public override void Visit( UnaryNode n )
+        public override void Visit(UnaryNode n)
         {
-            VisitNode( n.Right );
+            VisitNode(n.Right);
             _currentValue = -_currentValue;
         }
 
-        public override void Visit( ConstantNode n )
+        public override void Visit(ConstantNode n)
         {
             _currentValue = n.Value;
+        }
+
+        public override void Visit(IfNode n)
+        {
+            var temp = _currentValue;
+            VisitNode(n.Condition);
+            if (_currentValue > 0)
+            {
+                _currentValue = temp;
+                VisitNode(n.WhenTrue);
+            }
+            else
+            {
+                _currentValue = temp;
+                VisitNode(n.WhenFalse);
+            }
+
+
         }
 
     }

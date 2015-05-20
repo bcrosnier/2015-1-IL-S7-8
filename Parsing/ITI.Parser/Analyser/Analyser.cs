@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,17 +15,37 @@ namespace ITI.Parser
         {
             _tokenizer = tokenizer;
             if( _tokenizer.CurrentToken == TokenType.None ) _tokenizer.GetNextToken();
-            return HandleExpression();
+            return HandleSuperExpression();
+        }
+
+        private Node HandleSuperExpression()
+        {
+            var left = HandleExpression();
+            if (_tokenizer.CurrentToken == TokenType.QuestionMark)
+            {
+                _tokenizer.GetNextToken();
+
+                Node whenTrue = HandleExpression();
+
+                Debug.Assert(_tokenizer.CurrentToken == TokenType.Colon);
+                _tokenizer.GetNextToken();
+
+                Node whenFalse = HandleExpression();
+
+                return new IfNode(left, whenTrue, whenFalse);
+            } else {
+                return left;
+            }
         }
 
         private Node HandleExpression()
         {
             var left = HandleTerm();
-            while( _tokenizer.CurrentToken == TokenType.Plus || _tokenizer.CurrentToken == TokenType.Minus )
+            while (_tokenizer.CurrentToken == TokenType.Plus || _tokenizer.CurrentToken == TokenType.Minus)
             {
                 var type = _tokenizer.CurrentToken;
                 _tokenizer.GetNextToken();
-                left = new BinaryNode( type, left, HandleTerm() );
+                left = new BinaryNode(type, left, HandleTerm());
             }
             return left;
         }
@@ -54,7 +75,7 @@ namespace ITI.Parser
             if( _tokenizer.MatchDouble( out numberValue ) ) return new ConstantNode( numberValue );
             if( _tokenizer.Match( TokenType.OpenPar ) )
             {
-                var e = HandleExpression();
+                var e = HandleSuperExpression();
                 if( !_tokenizer.Match( TokenType.ClosePar ) ) return new ErrorNode( "Expected )." );
                 return e;
             }
