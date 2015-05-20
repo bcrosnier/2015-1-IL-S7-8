@@ -20,6 +20,17 @@ namespace ITI.Parser
         OpenPar = 16,
         ClosePar = 32,
         EndOfInput = 64,
-        Error = 128
+        Error = 128,
+
+        Colon,
+        QuestionMark,
+
+        IsBooleanOperator = 256,
+        GreaterThan,
+        GreaterOrEqual,
+        LessThan,
+        LessOrEqual,
+        Different,
+        EqualTo
     }
 }

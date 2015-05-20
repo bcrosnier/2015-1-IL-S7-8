@@ -128,6 +128,60 @@ namespace ITI.Parser
                 case '/': _curToken = TokenType.Div; break;
                 case '(': _curToken = TokenType.OpenPar; break;
                 case ')': _curToken = TokenType.ClosePar; break;
+                case ':': _curToken = TokenType.Colon; break;
+                case '?': _curToken = TokenType.QuestionMark; break;
+                case '>':
+                    {
+                        if (Peek() == '=')
+                        {
+                            _curToken = TokenType.GreaterOrEqual;
+                            Forward();
+                        }
+                        else
+                        {
+                            _curToken = TokenType.GreaterThan;
+                        }
+                    }
+                    break;
+                case '<':
+                    {
+                        if (Peek() == '=')
+                        {
+                            _curToken = TokenType.LessOrEqual;
+                            Forward();
+                        }
+                        else
+                        {
+                            _curToken = TokenType.LessThan;
+                        }
+                    }
+                    break;
+                case '=':
+                    {
+                        if (Peek() == '=')
+                        {
+                            _curToken = TokenType.EqualTo;
+                            Forward();
+                        }
+                        else
+                        {
+                            _curToken = TokenType.Error;
+                        }
+                    }
+                    break;
+                case '!':
+                    {
+                        if (Peek() == '=')
+                        {
+                            _curToken = TokenType.Different;
+                            Forward();
+                        }
+                        else
+                        {
+                            _curToken = TokenType.Error;
+                        }
+                    }
+                    break;
                 default:
                     {
                         if( Char.IsDigit( c ) )
