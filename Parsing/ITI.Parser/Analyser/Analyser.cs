@@ -21,19 +21,21 @@ namespace ITI.Parser
         private Node HandleSuperExpression()
         {
             var left = HandleBooleanExpression();
-            if (_tokenizer.CurrentToken == TokenType.QuestionMark)
+            if( _tokenizer.CurrentToken == TokenType.QuestionMark )
             {
                 _tokenizer.GetNextToken();
 
                 Node whenTrue = HandleExpression();
 
-                Debug.Assert(_tokenizer.CurrentToken == TokenType.Colon);
+                Debug.Assert( _tokenizer.CurrentToken == TokenType.Colon );
                 _tokenizer.GetNextToken();
 
                 Node whenFalse = HandleExpression();
 
-                return new IfNode(left, whenTrue, whenFalse);
-            } else {
+                return new IfNode( left, whenTrue, whenFalse );
+            }
+            else
+            {
                 return left;
             }
         }
@@ -41,13 +43,13 @@ namespace ITI.Parser
         private Node HandleBooleanExpression()
         {
             var left = HandleExpression();
-            if ((_tokenizer.CurrentToken & TokenType.IsBooleanOperator) == TokenType.IsBooleanOperator)
+            if( (_tokenizer.CurrentToken & TokenType.IsBooleanOperator) == TokenType.IsBooleanOperator )
             {
                 var currentToken = _tokenizer.CurrentToken;
 
                 _tokenizer.GetNextToken();
 
-                return new BinaryNode(currentToken, left, HandleExpression());
+                return new BinaryNode( currentToken, left, HandleExpression() );
             }
             else
             {
@@ -58,11 +60,11 @@ namespace ITI.Parser
         private Node HandleExpression()
         {
             var left = HandleTerm();
-            while (_tokenizer.CurrentToken == TokenType.Plus || _tokenizer.CurrentToken == TokenType.Minus)
+            while( _tokenizer.CurrentToken == TokenType.Plus || _tokenizer.CurrentToken == TokenType.Minus )
             {
                 var type = _tokenizer.CurrentToken;
                 _tokenizer.GetNextToken();
-                left = new BinaryNode(type, left, HandleTerm());
+                left = new BinaryNode( type, left, HandleTerm() );
             }
             return left;
         }
@@ -85,11 +87,17 @@ namespace ITI.Parser
             var e = HandlePositiveFactor();
             return isNeg ? new UnaryNode( TokenType.Minus, e ) : e;
         }
-        
+
         private Node HandlePositiveFactor()
         {
             double numberValue;
+            string stringValue;
+
             if( _tokenizer.MatchDouble( out numberValue ) ) return new ConstantNode( numberValue );
+            if( _tokenizer.MatchString( out stringValue ) )
+            {
+                return new ReferenceNode( stringValue );
+            }
             if( _tokenizer.Match( TokenType.OpenPar ) )
             {
                 var e = HandleSuperExpression();

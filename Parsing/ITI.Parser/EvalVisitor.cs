@@ -58,9 +58,11 @@ namespace ITI.Parser
                 _currentValue = temp;
                 VisitNode(n.WhenFalse);
             }
-
-
         }
 
+        public override void Visit( ReferenceNode n )
+        {
+            _currentValue = 3712;
+        }
     }
 }

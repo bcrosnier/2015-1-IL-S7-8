@@ -27,6 +27,10 @@ namespace ITI.Parser.Tests
         [TestCase( "5*5 > 1 ? (1?1:0) : 5", 1.0 )]
         [TestCase( "3+7 ? 1+8 : 4+1", 9.0 )]
         [TestCase( "3-7 ? 1+8 : (-4+1 ? -8 : -24 )", -24.0 )]
+        [TestCase( "lorem", 3712.0 )]
+        [TestCase( "true ? true : false", 3712.0 )]
+        [TestCase( "lorem ? ipsum : zfgg", 3712.0 )]
+        [TestCase( "(lorem ? ipsum : zefezf) + fefefe", 3712.0 * 2 )]
         public void test_evaluation( string text, double expectedResult )
         {
             Node n = new Analyser().Analyse( new StringTokenizer( text ) );

@@ -218,7 +218,7 @@ namespace ITI.Parser
                                 Forward();
                             }
 
-                            if( IsValidVariableNameCharacter( Peek() ) )
+                            if( !IsEnd && IsValidVariableNameCharacter( c = Peek() ) )
                             {
                                 _curToken = TokenType.Error;
                             }
@@ -245,7 +245,11 @@ namespace ITI.Parser
 
         static bool IsValidVariableNameCharacter( char c )
         {
-            return !Char.IsWhiteSpace( c ) && !Char.IsPunctuation( c );
+            return !Char.IsWhiteSpace( c )
+                && !Char.IsPunctuation( c )
+                && !Char.IsSymbol( c )
+                && !Char.IsSeparator( c )
+                && !Char.IsControl( c );
         }
 
     }

@@ -40,6 +40,8 @@ namespace ITI.Parser
             VisitNode( n.Right );
         }
 
-
+        public virtual void Visit( ReferenceNode n)
+        {
+        }
     }
 }

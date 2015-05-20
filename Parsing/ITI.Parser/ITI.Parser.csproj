@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyser\Analyser.cs" />
+    <Compile Include="Analyser\ReferenceNode.cs" />
     <Compile Include="Analyser\UnaryNode.cs" />
     <Compile Include="Analyser\BinaryNode.cs" />
     <Compile Include="Analyser\IfNode.cs" />
