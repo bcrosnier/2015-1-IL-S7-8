@@ -28,6 +28,19 @@ namespace ITI.Parser.Tests
             CollectionAssert.AreEqual( toParse.Split( ' ' ).Select( s => Double.Parse( s ) ).ToList(), values );
         }
 
+        [TestCase( "lorem ipsum dolor sit amet" )]
+        public void list_of_strings( string toParse )
+        {
+            var t = new StringTokenizer( toParse );
+            t.GetNextToken();
+            while( t.CurrentToken != TokenType.EndOfInput )
+            {
+                string p;
+                Assert.That( t.CurrentToken == TokenType.Identifier );
+                Assert.That( t.MatchString( out p ) );
+            }
+        }
+
 
     }
 }

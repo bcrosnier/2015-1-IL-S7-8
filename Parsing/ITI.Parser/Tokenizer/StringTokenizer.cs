@@ -14,6 +14,7 @@ namespace ITI.Parser
         int _maxPos;
         TokenType _curToken;
         double _doubleValue;
+        string _stringValue;
 
         public StringTokenizer( string s )
             : this( s, 0, s.Length )
@@ -111,6 +112,29 @@ namespace ITI.Parser
             return false;
         }
 
+        public bool MatchString( string expectedValue )
+        {
+            if( _curToken == TokenType.Identifier
+                && _stringValue == expectedValue )
+            {
+                GetNextToken();
+                return true;
+            }
+            return false;
+        }
+
+        public bool MatchString( out string value )
+        {
+            if( _curToken == TokenType.Identifier )
+            {
+                value = _stringValue;
+                GetNextToken();
+                return true;
+            }
+            value = null;
+            return false;
+        }
+
         public TokenType GetNextToken()
         {
             if( IsEnd ) return _curToken = TokenType.EndOfInput;
@@ -132,7 +156,7 @@ namespace ITI.Parser
                 case '?': _curToken = TokenType.QuestionMark; break;
                 case '>':
                     {
-                        if (Peek() == '=')
+                        if( Peek() == '=' )
                         {
                             _curToken = TokenType.GreaterOrEqual;
                             Forward();
@@ -145,7 +169,7 @@ namespace ITI.Parser
                     break;
                 case '<':
                     {
-                        if (Peek() == '=')
+                        if( Peek() == '=' )
                         {
                             _curToken = TokenType.LessOrEqual;
                             Forward();
@@ -158,7 +182,7 @@ namespace ITI.Parser
                     break;
                 case '=':
                     {
-                        if (Peek() == '=')
+                        if( Peek() == '=' )
                         {
                             _curToken = TokenType.EqualTo;
                             Forward();
@@ -171,7 +195,7 @@ namespace ITI.Parser
                     break;
                 case '!':
                     {
-                        if (Peek() == '=')
+                        if( Peek() == '=' )
                         {
                             _curToken = TokenType.NotEqual;
                             Forward();
@@ -193,7 +217,24 @@ namespace ITI.Parser
                                 val = val * 10 + (int)(c - '0');
                                 Forward();
                             }
+
+                            if( IsValidVariableNameCharacter( Peek() ) )
+                            {
+                                _curToken = TokenType.Error;
+                            }
                             _doubleValue = val;
+                        }
+                        else if( Char.IsLetter( c ) || c == '_' || c == '$' )
+                        {
+                            _curToken = TokenType.Identifier;
+                            StringBuilder sb = new StringBuilder();
+                            sb.Append( c );
+                            while( !IsEnd && IsValidVariableNameCharacter( c = Peek() ) )
+                            {
+                                sb.Append( c );
+                                Forward();
+                            }
+                            _stringValue = sb.ToString();
                         }
                         else _curToken = TokenType.Error;
                         break;
@@ -202,6 +243,11 @@ namespace ITI.Parser
             return _curToken;
         }
 
+        static bool IsValidVariableNameCharacter( char c )
+        {
+            return !Char.IsWhiteSpace( c ) && !Char.IsPunctuation( c );
+        }
+
     }
 }
-  
+

@@ -31,6 +31,7 @@ namespace ITI.Parser
         LessThan,
         LessOrEqual,
         NotEqual,
-        EqualTo
+        EqualTo,
+        Identifier
     }
 }
